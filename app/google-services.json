@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "275569132366",
+    "firebase_url": "https://dflix-e0c5e.firebaseio.com",
+    "project_id": "dflix-e0c5e",
+    "storage_bucket": "dflix-e0c5e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275569132366:android:903c35c826d53da8fb541f",
+        "android_client_info": {
+          "package_name": "com.divyansh.dflix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "275569132366-6i9affb8kql8nt13f8c19oi8no5rj1cd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmkVE56b7ieT-_x92OKaDzw0Vni2trfq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "275569132366-6i9affb8kql8nt13f8c19oi8no5rj1cd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
