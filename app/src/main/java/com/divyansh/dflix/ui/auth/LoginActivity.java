@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.divyansh.dflix.BaseActivity;
 import com.divyansh.dflix.R;
 import com.divyansh.dflix.models.User;
+import com.divyansh.dflix.ui.main.MainActivity;
 import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
@@ -73,6 +74,8 @@ public class LoginActivity extends BaseActivity {
             public void onChanged(User user) {
                 Log.d(TAG, "onChanged: subscribeObserversLogin " + user.getEmail() );
                 Log.d(TAG, "onChanged: current USer " + mAuthInstance.getCurrentUser().getEmail());
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
             }
         });
     }
