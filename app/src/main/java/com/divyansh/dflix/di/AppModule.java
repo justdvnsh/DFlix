@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.divyansh.dflix.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import javax.inject.Singleton;
 
@@ -17,6 +18,12 @@ import dagger.Provides;
 
 @Module
 public class AppModule {
+
+    @Singleton
+    @Provides
+    static FirebaseAuth getFirebaseAuthInstance() {
+        return FirebaseAuth.getInstance();
+    }
 
     @Singleton
     @Provides
