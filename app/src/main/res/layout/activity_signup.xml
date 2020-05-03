@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.auth.AuthActivity">
+    tools:context=".ui.auth.SignupActivity">
 
     <EditText
         android:layout_height="wrap_content"
@@ -26,23 +26,12 @@
         android:id="@+id/signup"
         />
 
-    <EditText
+    <TextView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:id="@+id/email_login"
-        />
-
-    <EditText
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:id="@+id/password_login"
-        />
-
-    <Button
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="login"
-        android:id="@+id/login"
+        android:text="Already Registered ? Login Here !"
+        android:id="@+id/signupTextView"
+        android:padding="20dp"
         />
 
 

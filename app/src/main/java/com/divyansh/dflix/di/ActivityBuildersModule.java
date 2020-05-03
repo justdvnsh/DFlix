@@ -1,8 +1,8 @@
 package com.divyansh.dflix.di;
 
 import com.divyansh.dflix.di.auth.AuthViewModelsModule;
-import com.divyansh.dflix.ui.auth.AuthActivity;
-import com.divyansh.dflix.ui.auth.AuthViewModel;
+import com.divyansh.dflix.ui.auth.LoginActivity;
+import com.divyansh.dflix.ui.auth.SignupActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -15,5 +15,12 @@ public abstract class ActivityBuildersModule {
                     AuthViewModelsModule.class
             }
     )
-    abstract AuthActivity contributeAuthActivity();
+    abstract SignupActivity contributeSignupActivity();
+
+    @ContributesAndroidInjector(
+            modules = {
+                    AuthViewModelsModule.class
+            }
+    )
+    abstract LoginActivity contributeLoginActivity();
 }

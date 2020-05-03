@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.divyansh.dflix.BaseActivity;
@@ -19,49 +21,48 @@ import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
 
-import dagger.android.support.DaggerAppCompatActivity;
+public class LoginActivity extends BaseActivity {
 
-public class AuthActivity extends BaseActivity {
-
-    private static final String TAG = "AuthActivity";
-    private AuthViewModel viewModel;
-    private EditText email, password, email_login, password_login;
-    private Button signupBtn, loginBtn;
+    private static final String TAG = "LoginActivity";
+    private LoginViewModel viewModel;
+    private EditText email_login, password_login;
+    private Button loginBtn;
+    private TextView loginTextView;
 
     @Inject
-    public ViewModelProviderFactory providerFactory;
+    ViewModelProviderFactory providerFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
+        setContentView(R.layout.activity_login);
 
-        viewModel = new ViewModelProvider(this, providerFactory).get(AuthViewModel.class);
-
-        email = findViewById(R.id.email);
-        password = findViewById(R.id.password);
-        signupBtn = findViewById(R.id.signup);
 
         email_login = findViewById(R.id.email_login);
         password_login = findViewById(R.id.password_login);
         loginBtn = findViewById(R.id.login);
+        loginTextView = findViewById(R.id.loginTextView);
 
-        signupBtn.setOnClickListener(new View.OnClickListener() {
+        viewModel = new ViewModelProvider(this, providerFactory).get(LoginViewModel.class);
+
+        loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 subscribeObservers();
             }
         });
 
-        loginBtn.setOnClickListener(new View.OnClickListener() {
+        loginTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subscribeObserversLogin();
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class));
             }
         });
+
+        Log.d(TAG, "onCreate: Firebase User " + mAuthInstance.getCurrentUser().getEmail());
     }
 
-    private void subscribeObserversLogin() {
+    private void subscribeObservers() {
         if (TextUtils.isEmpty(email_login.getText().toString()) || TextUtils.isEmpty(password_login.getText().toString())) {
             Toast.makeText(this, "Fill the values", Toast.LENGTH_SHORT).show();
             return ;
@@ -71,15 +72,7 @@ public class AuthActivity extends BaseActivity {
             @Override
             public void onChanged(User user) {
                 Log.d(TAG, "onChanged: subscribeObserversLogin " + user.getEmail() );
-            }
-        });
-    }
-
-    private void subscribeObservers() {
-        viewModel.signup(email.getText().toString(), password.getText().toString()).observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                Log.d(TAG, "onChanged: subscribeObservers " + user.getEmail());
+                Log.d(TAG, "onChanged: current USer " + mAuthInstance.getCurrentUser().getEmail());
             }
         });
     }
