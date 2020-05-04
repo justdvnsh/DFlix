@@ -23,6 +23,7 @@ public class HomeViewModel extends ViewModel {
     private static final String TAG = "HomeViewModel";
     private HomeApi homeApi;
     private MediatorLiveData<Resource<TrendingMovies>> movies;
+    private MediatorLiveData<Resource<TrendingMovies>> tvShows;
 
     @Inject
     public HomeViewModel(HomeApi homeApi) {
@@ -69,6 +70,47 @@ public class HomeViewModel extends ViewModel {
             });
         }
         return movies;
+    }
+
+    public LiveData<Resource<TrendingMovies>> observeTrendingTVShows(){
+        if (tvShows == null) {
+            tvShows = new MediatorLiveData<>();
+            tvShows.setValue(Resource.loading((TrendingMovies) null));
+
+            final LiveData<Resource<TrendingMovies>> source = LiveDataReactiveStreams.fromPublisher(
+                    homeApi.getTrendingTVShows(Constants.API_KEY)
+                            .onErrorReturn(new Function<Throwable, TrendingMovies>() {
+                                @Override
+                                public TrendingMovies apply(Throwable throwable) throws Exception {
+                                    TrendingMovies trendingMovies = new TrendingMovies();
+                                    trendingMovies.setId(-1);
+                                    return trendingMovies;
+                                }
+                            })
+                            .map(new Function<TrendingMovies, Resource<TrendingMovies>>() {
+                                @Override
+                                public Resource<TrendingMovies> apply(TrendingMovies trendingMovies) throws Exception {
+
+                                    if (trendingMovies.getId() == -1) {
+                                        return Resource.error("Something Went Wrong", null);
+                                    }
+
+                                    return Resource.success(trendingMovies);
+                                }
+                            })
+                            .subscribeOn(Schedulers.io())
+
+            );
+
+            tvShows.addSource(source, new Observer<Resource<TrendingMovies>>() {
+                @Override
+                public void onChanged(Resource<TrendingMovies> trendingMoviesResource) {
+                    tvShows.setValue(trendingMoviesResource);
+                    tvShows.removeSource(source);
+                }
+            });
+        }
+        return tvShows;
     }
 
 }

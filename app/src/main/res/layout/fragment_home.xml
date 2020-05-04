@@ -42,10 +42,67 @@
 
         </RelativeLayout>
 
+        <ProgressBar
+            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_gravity="center"
+            android:id="@+id/movie_progress_bar"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/recycler_view_movies"
+            />
+
+
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            >
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/trending_tv_shows"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/view_all"
+                android:id="@+id/view_all_tv"
+                android:padding="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:layout_gravity="center"
+            android:id="@+id/tv_progress_bar"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/recycler_view_tv"
             />
 
     </LinearLayout>

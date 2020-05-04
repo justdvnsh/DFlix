@@ -8,6 +8,9 @@ import retrofit2.http.Query;
 
 public interface HomeApi {
 
-    @GET("/3/trending/movie/day")
+    @GET("/3/trending/movie/week")
     Flowable<TrendingMovies> getTrendingMovies(@Query("api_key") String apiKey);
+
+    @GET("/3/trending/tv/week")
+    Flowable<TrendingMovies> getTrendingTVShows(@Query("api_key") String apiKey);
 }
