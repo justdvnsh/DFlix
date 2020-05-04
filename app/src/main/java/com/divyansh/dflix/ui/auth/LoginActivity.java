@@ -60,7 +60,7 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        Log.d(TAG, "onCreate: Firebase User " + mAuthInstance.getCurrentUser().getEmail());
+//        Log.d(TAG, "onCreate: Firebase User " + mAuthInstance.getCurrentUser().getEmail());
     }
 
     private void subscribeObservers() {

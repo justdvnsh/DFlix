@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.divyansh.dflix.BaseActivity;
 import com.divyansh.dflix.R;
 import com.divyansh.dflix.models.User;
+import com.divyansh.dflix.ui.main.MainActivity;
 import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
@@ -35,6 +36,11 @@ public class SignupActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        if (mAuthInstance.getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
 
         viewModel = new ViewModelProvider(this, providerFactory).get(SignupViewModel.class);
 

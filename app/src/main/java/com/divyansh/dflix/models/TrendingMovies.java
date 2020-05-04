@@ -19,6 +19,8 @@ public class TrendingMovies {
     @Expose
     private Integer totalResults;
 
+    private int id;
+
     public Integer getPage() {
         return page;
     }
@@ -51,4 +53,11 @@ public class TrendingMovies {
         this.totalResults = totalResults;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 }
