@@ -3,6 +3,7 @@ package com.divyansh.dflix.di.main;
 import androidx.lifecycle.ViewModel;
 
 import com.divyansh.dflix.di.ViewModelKey;
+import com.divyansh.dflix.ui.main.favorites.FavoriteViewModel;
 import com.divyansh.dflix.ui.main.home.HomeViewModel;
 
 import dagger.Binds;
@@ -16,4 +17,9 @@ public abstract class MainViewModelsModule {
     @IntoMap
     @ViewModelKey(HomeViewModel.class)
     public abstract ViewModel bindsHomeViewModel(HomeViewModel homeViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FavoriteViewModel.class)
+    public abstract ViewModel bindsFavoriteViewModel(FavoriteViewModel homeViewModel);
 }
