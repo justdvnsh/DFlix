@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorPrimary"
     tools:context=".ui.main.MainActivity">
 
     <fragment
@@ -22,6 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:itemIconTint="@color/colorAccent"
+        app:itemTextColor="@color/colorAccent"
         app:menu="@menu/bottom_menu_nav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
