@@ -2,6 +2,7 @@ package com.divyansh.dflix.di.main;
 
 import android.app.Application;
 
+import com.divyansh.dflix.adapters.GenreAdapter;
 import com.divyansh.dflix.adapters.TrendingAdapter;
 import com.divyansh.dflix.network.HomeApi;
 
@@ -15,6 +16,11 @@ public class MainModules {
     @Provides
     static TrendingAdapter getTrendingMoviesAdapter(Application application) {
         return new TrendingAdapter(application);
+    }
+
+    @Provides
+    static GenreAdapter getGenreAdapter(Application application) {
+        return new GenreAdapter(application);
     }
 
     @Provides

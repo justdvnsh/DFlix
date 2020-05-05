@@ -12,11 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.divyansh.dflix.R;
+import com.divyansh.dflix.adapters.GenreAdapter;
 import com.divyansh.dflix.adapters.TrendingAdapter;
+import com.divyansh.dflix.models.Genre;
+import com.divyansh.dflix.models.Genres;
 import com.divyansh.dflix.models.Result;
 import com.divyansh.dflix.models.TrendingMovies;
 import com.divyansh.dflix.ui.main.Resource;
@@ -26,13 +30,12 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerFragment;
 
-public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnClickListener{
+public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnClickListener, GenreAdapter.mOnClickListener{
 
     private static final String TAG = "HomeFragment";
     private HomeViewModel viewModel;
-    private RecyclerView recyclerView;
-    private RecyclerView recyclerViewTV;
-    private ProgressBar movieProgress, tvProgress;
+    private RecyclerView recyclerView, recyclerViewTV, recyclerViewGenre;
+    private ProgressBar movieProgress, tvProgress, genreProgress;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -42,6 +45,9 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
 
     @Inject
     TrendingAdapter tvAdapter;
+
+    @Inject
+    GenreAdapter genreAdapter;
 
     @Nullable
     @Override
@@ -54,11 +60,14 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
         viewModel = new ViewModelProvider(this, providerFactory).get(HomeViewModel.class);
         subscribeObservers();
         subscribeObserversTv();
+        subscribeObserversGenres();
 
         recyclerView = view.findViewById(R.id.recycler_view_movies);
         recyclerViewTV = view.findViewById(R.id.recycler_view_tv);
+        recyclerViewGenre = view.findViewById(R.id.recycler_view_genres);
         movieProgress = view.findViewById(R.id.movie_progress_bar);
         tvProgress = view.findViewById(R.id.tv_progress_bar);
+        genreProgress = view.findViewById(R.id.genres_progress_bar);
         initRecyclerView();
     }
 
@@ -71,6 +80,10 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
         recyclerViewTV.setHasFixedSize(true);
         recyclerViewTV.setLayoutManager(linearLayoutManagerTV);
         recyclerViewTV.setAdapter(tvAdapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
+        recyclerViewGenre.setHasFixedSize(true);
+        recyclerViewGenre.setLayoutManager(gridLayoutManager);
+        recyclerViewGenre.setAdapter(genreAdapter);
     }
 
     private void subscribeObservers() {
@@ -139,6 +152,37 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
         });
     }
 
+    private void subscribeObserversGenres() {
+        viewModel.observeGenres().removeObservers(getViewLifecycleOwner());
+        viewModel.observeGenres().observe(getViewLifecycleOwner(), new Observer<Resource<Genres>>() {
+            @Override
+            public void onChanged(Resource<Genres> genresResource) {
+                if (genresResource != null) {
+                    switch (genresResource.status) {
+
+                        case LOADING:
+                            Log.d(TAG, "onChanged: LOADING...");
+                            showProgress(true, genreProgress);
+                            break;
+
+                        case SUCCESS:
+                            Log.d(TAG, "onChanged: got Genres...");
+                            Log.d(TAG, "onChanged: total results " + genresResource.data.getGenres().size());
+                            showProgress(false, genreProgress);
+                            genreAdapter.setGenres(genresResource.data.getGenres());
+                            genreAdapter.setGenreClickListener(HomeFragment.this);
+                            break;
+
+                        case ERROR:
+                            Log.e(TAG, "onChanged: ERROR..." + genresResource.message );
+                            showProgress(false, genreProgress);
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
     private void showProgress(boolean b, ProgressBar progressBar) {
         if (b) {
             progressBar.setVisibility(View.VISIBLE);
@@ -154,5 +198,10 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
         } else {
             Toast.makeText(getContext(), "POSTER CLIKCED at " + result.getName(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onGenreClick(Genre result) {
+        Toast.makeText(getContext(), "Genre " + result.getName(), Toast.LENGTH_SHORT).show();
     }
 }

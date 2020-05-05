@@ -2,12 +2,14 @@ package com.divyansh.dflix.ui.main.home;
 
 import android.util.Log;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.divyansh.dflix.models.Genres;
 import com.divyansh.dflix.models.TrendingMovies;
 import com.divyansh.dflix.network.HomeApi;
 import com.divyansh.dflix.ui.main.Resource;
@@ -24,6 +26,7 @@ public class HomeViewModel extends ViewModel {
     private HomeApi homeApi;
     private MediatorLiveData<Resource<TrendingMovies>> movies;
     private MediatorLiveData<Resource<TrendingMovies>> tvShows;
+    private MediatorLiveData<Resource<Genres>> genres;
 
     @Inject
     public HomeViewModel(HomeApi homeApi) {
@@ -113,4 +116,45 @@ public class HomeViewModel extends ViewModel {
         return tvShows;
     }
 
+
+    public LiveData<Resource<Genres>> observeGenres() {
+        if (genres == null) {
+            genres = new MediatorLiveData<>();
+            genres.setValue(Resource.loading((Genres) null));
+
+            final LiveData<Resource<Genres>> source = LiveDataReactiveStreams.fromPublisher(
+                    homeApi.getGenres(Constants.API_KEY, Constants.LANGUAGE)
+                    .onErrorReturn(new Function<Throwable, Genres>() {
+                        @Override
+                        public Genres apply(Throwable throwable) throws Exception {
+                            Genres genres = new Genres();
+                            genres.setId(-1);
+                            return genres;
+                        }
+                    })
+                    .map(new Function<Genres, Resource<Genres>>() {
+                        @Override
+                        public Resource<Genres> apply(Genres genres) throws Exception {
+                            if (genres.getId() == -1 ) {
+                                return Resource.error("Something Went Wrong", null);
+                            }
+
+                            return Resource.success(genres);
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+            );
+
+            genres.addSource(source, new Observer<Resource<Genres>>() {
+                @Override
+                public void onChanged(Resource<Genres> genresResource) {
+                    genres.setValue(genresResource);
+                    genres.removeSource(source);
+                }
+            });
+        }
+
+        return genres;
+    }
 }
+

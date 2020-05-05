@@ -1,5 +1,6 @@
 package com.divyansh.dflix.network;
 
+import com.divyansh.dflix.models.Genres;
 import com.divyansh.dflix.models.TrendingMovies;
 
 import io.reactivex.Flowable;
@@ -13,4 +14,7 @@ public interface HomeApi {
 
     @GET("/3/trending/tv/week")
     Flowable<TrendingMovies> getTrendingTVShows(@Query("api_key") String apiKey);
+
+    @GET("/3/genre/movie/list")
+    Flowable<Genres> getGenres(@Query("api_key") String api_key, @Query("language") String language);
 }

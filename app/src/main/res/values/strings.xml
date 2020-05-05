@@ -6,4 +6,5 @@
     <string name="trending_tv_shows">Trending TV Shows</string>
     <string name="home">Home</string>
     <string name="favorites">Favorites</string>
+    <string name="find_by_genre">Find By Genre</string>
 </resources>
