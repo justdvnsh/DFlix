@@ -1,5 +1,6 @@
 package com.divyansh.dflix.di;
 
+import com.bumptech.glide.Glide;
 import com.divyansh.dflix.di.auth.AuthViewModelsModule;
 import com.divyansh.dflix.di.detailMovie.DetailMovieModules;
 import com.divyansh.dflix.di.detailMovie.DetailMovieViewModelsModule;

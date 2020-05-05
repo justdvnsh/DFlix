@@ -198,11 +198,13 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
         Intent intent = new Intent(getActivity(), DetailMovieActivity.class);
         if (result.getTitle() != null) {
             Toast.makeText(getContext(), "POSTER CLIKCED at " + result.getTitle(), Toast.LENGTH_SHORT).show();
+            intent.putExtra("type", "movie");
         } else {
             Toast.makeText(getContext(), "POSTER CLIKCED at " + result.getName(), Toast.LENGTH_SHORT).show();
+            intent.putExtra("type", "tv");
         }
 
-        intent.putExtra("movieId", result.getId());
+        intent.putExtra("id", result.getId());
         startActivity(intent);
     }
 
