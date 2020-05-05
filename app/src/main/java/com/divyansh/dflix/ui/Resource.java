@@ -1,4 +1,4 @@
-package com.divyansh.dflix.ui.main;
+package com.divyansh.dflix.ui;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

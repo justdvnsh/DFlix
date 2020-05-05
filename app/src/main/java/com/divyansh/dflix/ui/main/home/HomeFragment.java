@@ -1,5 +1,6 @@
 package com.divyansh.dflix.ui.main.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,8 @@ import com.divyansh.dflix.models.Genre;
 import com.divyansh.dflix.models.Genres;
 import com.divyansh.dflix.models.Result;
 import com.divyansh.dflix.models.TrendingMovies;
-import com.divyansh.dflix.ui.main.Resource;
+import com.divyansh.dflix.ui.Resource;
+import com.divyansh.dflix.ui.detail.DetailMovieActivity;
 import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
@@ -193,11 +195,15 @@ public class HomeFragment extends DaggerFragment implements TrendingAdapter.mOnC
 
     @Override
     public void onResultClick(Result result) {
+        Intent intent = new Intent(getActivity(), DetailMovieActivity.class);
         if (result.getTitle() != null) {
             Toast.makeText(getContext(), "POSTER CLIKCED at " + result.getTitle(), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getContext(), "POSTER CLIKCED at " + result.getName(), Toast.LENGTH_SHORT).show();
         }
+
+        intent.putExtra("movieId", result.getId());
+        startActivity(intent);
     }
 
     @Override

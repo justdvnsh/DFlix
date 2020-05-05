@@ -2,7 +2,6 @@ package com.divyansh.dflix.ui.main.home;
 
 import android.util.Log;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.LiveDataReactiveStreams;
 import androidx.lifecycle.MediatorLiveData;
@@ -12,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 import com.divyansh.dflix.models.Genres;
 import com.divyansh.dflix.models.TrendingMovies;
 import com.divyansh.dflix.network.HomeApi;
-import com.divyansh.dflix.ui.main.Resource;
+import com.divyansh.dflix.ui.Resource;
 import com.divyansh.dflix.utils.Constants;
 
 import javax.inject.Inject;
