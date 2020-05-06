@@ -10,4 +10,5 @@
     <string name="mark_as_favorite">Mark As Favorite</string>
     <string name="saved_movies">Saved Movies</string>
     <string name="saved_tv_shows">Saved TV Shows</string>
+    <string name="favourite_items">Favourite Items</string>
 </resources>

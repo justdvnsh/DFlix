@@ -3,13 +3,13 @@ package com.divyansh.dflix.data;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-import com.divyansh.dflix.data.DAO.MovieDao;
-import com.divyansh.dflix.data.entities.Movies;
+import com.divyansh.dflix.data.DAO.SavedDao;
+import com.divyansh.dflix.data.entities.Saved;
 
 @Database(entities = {
-        Movies.class
-}, version = 1)
+        Saved.class
+}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public abstract MovieDao movieDao();
+    public abstract SavedDao savedDao();
 }

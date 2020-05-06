@@ -15,7 +15,7 @@
             android:layout_height="300dp"
             android:layout_width="match_parent"
             android:id="@+id/poster"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             />
 
         <TextView

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/savedImage"
+        android:scaleType="centerInside"
+        android:layout_margin="14dp"
+        xmlns:android="http://schemas.android.com/apk/res/android" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="top|right"
+        android:id="@+id/removeSavedItem"
+        android:src="@drawable/ic_close_black_24dp"
+        />
+
+</FrameLayout>

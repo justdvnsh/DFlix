@@ -10,17 +10,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.divyansh.dflix.data.AppDatabase;
-import com.divyansh.dflix.data.entities.Movies;
+import com.divyansh.dflix.data.entities.Saved;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.network.DetailMovieApi;
 import com.divyansh.dflix.ui.Resource;
 import com.divyansh.dflix.utils.Constants;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -78,8 +78,6 @@ public class DetailMovieViewModel extends ViewModel {
             });
         }
 
-        Log.d(TAG, "observeMovieDetails: appdatabase " + db.movieDao().toString());
-
         return movieDetails;
 
     };
@@ -127,12 +125,12 @@ public class DetailMovieViewModel extends ViewModel {
 
     }
 
-    public void saveMovie(int id, String title, String description, double rating, String posterPath, String placeholder, String releaseDate, int length, String genres) {
-        Movies movie = new Movies(id, title, description, rating, posterPath, placeholder, releaseDate, length, genres);
-        new insertDbTask(db).execute(movie);
+    public void saveItem(int id, String posterPath, String type) {
+        Saved saved = new Saved(id, posterPath, type);
+        new insertDbTask(db).execute(saved);
     }
 
-    private static class insertDbTask extends AsyncTask<Movies, Void, Void> {
+    private static class insertDbTask extends AsyncTask<Saved, Void, Void> {
 
         private AppDatabase db;
 
@@ -141,10 +139,19 @@ public class DetailMovieViewModel extends ViewModel {
         }
 
         @Override
-        protected Void doInBackground(Movies... movies) {
-            db.movieDao().save(movies[0]);
-            Log.d(TAG, "doInBackground: Saved ");
+        protected Void doInBackground(Saved... saveds) {
+            int[] ids = {saveds[0].getId()};
+            List<Saved> values = db.savedDao().findById(ids);
+            Log.d(TAG, "saveValues: values " + values.size());
+            if (values.size() == 0) {
+                db.savedDao().save(saveds[0]);
+                Log.d(TAG, "doInBackground: Saved ");
+            } else {
+                Log.d(TAG, "doInBackground: Item already in the database");
+            }
+
             return null;
         }
     }
+
 }

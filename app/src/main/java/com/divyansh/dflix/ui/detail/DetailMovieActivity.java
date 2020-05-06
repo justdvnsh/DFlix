@@ -15,11 +15,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.divyansh.dflix.BaseActivity;
 import com.divyansh.dflix.R;
-import com.divyansh.dflix.data.entities.Movies;
 import com.divyansh.dflix.models.Genre;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.ui.Resource;
+import com.divyansh.dflix.utils.Constants;
 import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
@@ -137,16 +137,12 @@ public class DetailMovieActivity extends BaseActivity {
         markAsFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveMovie(movie.getId(), movie.getTitle(), movie.getOverview(), movie.getVoteAverage(), movie.getPosterPath(), movie.getTagline(), movie.getReleaseDate(), movie.getRuntime(), genres.getText().toString());
+                viewModel.saveItem(movie.getId(), movie.getPosterPath(), Constants.TYPE_MOVIE);
             }
         });
     }
 
-    private void saveMovie(Integer id, String title, String overview, Double voteAverage, String posterPath, String tagline, String releaseDate, Integer runtime, String genre) {
-        viewModel.saveMovie(id, title, overview, voteAverage, posterPath, tagline, releaseDate, runtime, genre);
-    }
-
-    private void setViewsTv(DetailTv tv) {
+    private void setViewsTv(final DetailTv tv) {
         glide.load("http://image.tmdb.org/t/p/w342" + tv.getPosterPath()).into(poster);
         title.setText(tv.getName());
         placeholder.setText("Last Aired on " +  tv.getLastAirDate().toString());
@@ -157,5 +153,12 @@ public class DetailMovieActivity extends BaseActivity {
         for (Genre g: tv.getGenres()) {
             genres.append(g.getName() + " ");
         }
+
+        markAsFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewModel.saveItem(tv.getId(), tv.getPosterPath(), Constants.TYPE_TV);
+            }
+        });
     }
 }
