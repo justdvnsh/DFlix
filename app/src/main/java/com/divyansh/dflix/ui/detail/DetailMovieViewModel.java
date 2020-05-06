@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.divyansh.dflix.data.AppDatabase;
 import com.divyansh.dflix.data.entities.Saved;
+import com.divyansh.dflix.models.TrendingMovies;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.network.DetailMovieApi;
@@ -30,6 +31,8 @@ public class DetailMovieViewModel extends ViewModel {
     private DetailMovieApi api;
     private MediatorLiveData<Resource<DetailMovie>> movieDetails;
     private MediatorLiveData<Resource<DetailTv>> tvDetails;
+    private MediatorLiveData<Resource<TrendingMovies>> movies;
+    private MediatorLiveData<Resource<TrendingMovies>> tvShows;
 
     @Inject
     AppDatabase db;
@@ -152,6 +155,88 @@ public class DetailMovieViewModel extends ViewModel {
 
             return null;
         }
+    }
+
+    public LiveData<Resource<TrendingMovies>> observeSimilarMovies(int id){
+        if (movies == null) {
+            movies = new MediatorLiveData<>();
+            movies.setValue(Resource.loading((TrendingMovies) null));
+
+            final LiveData<Resource<TrendingMovies>> source = LiveDataReactiveStreams.fromPublisher(
+                    api.getSimilar(Constants.TYPE_MOVIE, id, Constants.API_KEY, Constants.LANGUAGE, 1)
+                            .onErrorReturn(new Function<Throwable, TrendingMovies>() {
+                                @Override
+                                public TrendingMovies apply(Throwable throwable) throws Exception {
+                                    TrendingMovies trendingMovies = new TrendingMovies();
+                                    trendingMovies.setId(-1);
+                                    return trendingMovies;
+                                }
+                            })
+                            .map(new Function<TrendingMovies, Resource<TrendingMovies>>() {
+                                @Override
+                                public Resource<TrendingMovies> apply(TrendingMovies trendingMovies) throws Exception {
+
+                                    if (trendingMovies.getId() == -1) {
+                                        return Resource.error("Something Went Wrong", null);
+                                    }
+
+                                    return Resource.success(trendingMovies);
+                                }
+                            })
+                            .subscribeOn(Schedulers.io())
+
+            );
+
+            movies.addSource(source, new Observer<Resource<TrendingMovies>>() {
+                @Override
+                public void onChanged(Resource<TrendingMovies> trendingMoviesResource) {
+                    movies.setValue(trendingMoviesResource);
+                    movies.removeSource(source);
+                }
+            });
+        }
+        return movies;
+    }
+
+    public LiveData<Resource<TrendingMovies>> observeSimilarTVShows(int id){
+        if (tvShows == null) {
+            tvShows = new MediatorLiveData<>();
+            tvShows.setValue(Resource.loading((TrendingMovies) null));
+
+            final LiveData<Resource<TrendingMovies>> source = LiveDataReactiveStreams.fromPublisher(
+                    api.getSimilar(Constants.TYPE_TV, id, Constants.API_KEY, Constants.LANGUAGE, 1)
+                            .onErrorReturn(new Function<Throwable, TrendingMovies>() {
+                                @Override
+                                public TrendingMovies apply(Throwable throwable) throws Exception {
+                                    TrendingMovies trendingMovies = new TrendingMovies();
+                                    trendingMovies.setId(-1);
+                                    return trendingMovies;
+                                }
+                            })
+                            .map(new Function<TrendingMovies, Resource<TrendingMovies>>() {
+                                @Override
+                                public Resource<TrendingMovies> apply(TrendingMovies trendingMovies) throws Exception {
+
+                                    if (trendingMovies.getId() == -1) {
+                                        return Resource.error("Something Went Wrong", null);
+                                    }
+
+                                    return Resource.success(trendingMovies);
+                                }
+                            })
+                            .subscribeOn(Schedulers.io())
+
+            );
+
+            tvShows.addSource(source, new Observer<Resource<TrendingMovies>>() {
+                @Override
+                public void onChanged(Resource<TrendingMovies> trendingMoviesResource) {
+                    tvShows.setValue(trendingMoviesResource);
+                    tvShows.removeSource(source);
+                }
+            });
+        }
+        return tvShows;
     }
 
 }

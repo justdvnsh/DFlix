@@ -15,7 +15,7 @@
             android:layout_height="300dp"
             android:layout_width="match_parent"
             android:id="@+id/poster"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             />
 
         <TextView
@@ -115,6 +115,25 @@
                 android:layout_marginTop="10dp"
                 />
         </RelativeLayout>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="20dp"
+            android:padding="20dp"
+            android:text="@string/similar_movies"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/recycler_view_similar_items"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            />
 
     </LinearLayout>
 </ScrollView>

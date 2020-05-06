@@ -2,7 +2,10 @@ package com.divyansh.dflix.ui.detail;
 
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,12 +13,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.divyansh.dflix.BaseActivity;
 import com.divyansh.dflix.R;
+import com.divyansh.dflix.adapters.TrendingAdapter;
 import com.divyansh.dflix.models.Genre;
+import com.divyansh.dflix.models.Result;
+import com.divyansh.dflix.models.TrendingMovies;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.ui.Resource;
@@ -24,19 +31,23 @@ import com.divyansh.dflix.viewmodels.ViewModelProviderFactory;
 
 import javax.inject.Inject;
 
-public class DetailMovieActivity extends BaseActivity {
+public class DetailMovieActivity extends BaseActivity implements TrendingAdapter.mOnClickListener{
 
     private static final String TAG = "DetailMovieActivity";
     private DetailMovieViewModel viewModel;
     private TextView title, date, length, rating, description, placeholder, genres;
     private ImageView poster;
     private Button markAsFavorite;
+    private RecyclerView recyclerView;
 
     @Inject
     ViewModelProviderFactory providerFactory;
 
     @Inject
     public RequestManager glide;
+
+    @Inject
+    TrendingAdapter adapter;
 
     private int id;
     private String type;
@@ -54,10 +65,12 @@ public class DetailMovieActivity extends BaseActivity {
 
         initViews();
 
-        if (type.equals("movie")) {
+        if (type.equals(Constants.TYPE_MOVIE)) {
             subscribeObserversMovie();
-        } else if (type.equals("tv")) {
+            subscribeSimilarMovies();
+        } else if (type.equals(Constants.TYPE_TV)) {
             subscribeObserversTv();
+            subscribeSimilarTv();
         }
     }
 
@@ -79,6 +92,31 @@ public class DetailMovieActivity extends BaseActivity {
 
                         case ERROR:
                             Log.d(TAG, "onChanged: ERROR " + detailMovieResource.message);
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
+    private void subscribeSimilarMovies() {
+        viewModel.observeSimilarMovies(id).observe(this, new Observer<Resource<TrendingMovies>>() {
+            @Override
+            public void onChanged(Resource<TrendingMovies> trendingMoviesResource) {
+                if (trendingMoviesResource != null) {
+                    switch (trendingMoviesResource.status) {
+                        case LOADING:
+                            Log.d(TAG, "onChanged: LOADING ...");
+                            break;
+
+                        case SUCCESS:
+                            Log.d(TAG, "onChanged: Success " + trendingMoviesResource.data.getTotalResults());
+                            adapter.setMovies(trendingMoviesResource.data.getResults());
+                            adapter.setMovieClickListener(DetailMovieActivity.this);
+                            break;
+
+                        case ERROR:
+                            Log.d(TAG, "onChanged: ERROR " + trendingMoviesResource.message);
                             break;
                     }
                 }
@@ -111,6 +149,31 @@ public class DetailMovieActivity extends BaseActivity {
         });
     }
 
+    private void subscribeSimilarTv() {
+        viewModel.observeSimilarTVShows(id).observe(this, new Observer<Resource<TrendingMovies>>() {
+            @Override
+            public void onChanged(Resource<TrendingMovies> trendingMoviesResource) {
+                if (trendingMoviesResource != null) {
+                    switch (trendingMoviesResource.status) {
+                        case LOADING:
+                            Log.d(TAG, "onChanged: LOADING ...");
+                            break;
+
+                        case SUCCESS:
+                            Log.d(TAG, "onChanged: Success " + trendingMoviesResource.data.getTotalResults());
+                            adapter.setMovies(trendingMoviesResource.data.getResults());
+                            adapter.setMovieClickListener(DetailMovieActivity.this);
+                            break;
+
+                        case ERROR:
+                            Log.d(TAG, "onChanged: ERROR " + trendingMoviesResource.message);
+                            break;
+                    }
+                }
+            }
+        });
+    }
+
     private void initViews() {
         poster = findViewById(R.id.poster);
         title = findViewById(R.id.name);
@@ -121,6 +184,11 @@ public class DetailMovieActivity extends BaseActivity {
         date = findViewById(R.id.date);
         genres = findViewById(R.id.genres);
         markAsFavorite = findViewById(R.id.mark_as_favorite);
+        recyclerView = findViewById(R.id.recycler_view_similar_items);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
     }
 
     private void setViewsMovies(final DetailMovie movie) {
@@ -160,5 +228,18 @@ public class DetailMovieActivity extends BaseActivity {
                 viewModel.saveItem(tv.getId(), tv.getPosterPath(), Constants.TYPE_TV);
             }
         });
+    }
+
+    @Override
+    public void onResultClick(Result result) {
+//        Intent intent = new Intent(this, DetailMovieActivity.class);
+//        intent.putExtra("id", result.getId());
+//        intent.putExtra("type", type);
+//        startActivity(intent);
+        finish();
+        Intent intent = new Intent(getIntent());
+        intent.putExtra("id", result.getId());
+        intent.putExtra("type", type);
+        startActivity(intent);
     }
 }
