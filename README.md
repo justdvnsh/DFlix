@@ -21,5 +21,4 @@ instead they would be taken to the main screen automatically.
 
 # Screenshots
 
-|![Home Fragment](image/1.jpg)|![Favorites](image/2.jpg)|![Similar Movies](image/3.jpg)
-|--|--|--|
+|![Home Fragment](images/1.jpg)|![Favorites](images/2.jpg)|![Similar Movies](images/3.jpg)|--|--|--|
