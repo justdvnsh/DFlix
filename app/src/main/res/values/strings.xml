@@ -7,4 +7,7 @@
     <string name="home">Home</string>
     <string name="favorites">Favorites</string>
     <string name="find_by_genre">Find By Genre</string>
+    <string name="mark_as_favorite">Mark As Favorite</string>
+    <string name="saved_movies">Saved Movies</string>
+    <string name="saved_tv_shows">Saved TV Shows</string>
 </resources>

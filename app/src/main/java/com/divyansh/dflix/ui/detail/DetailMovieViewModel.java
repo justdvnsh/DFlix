@@ -1,5 +1,6 @@
 package com.divyansh.dflix.ui.detail;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -8,6 +9,8 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.divyansh.dflix.data.AppDatabase;
+import com.divyansh.dflix.data.entities.Movies;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.network.DetailMovieApi;
@@ -16,6 +19,8 @@ import com.divyansh.dflix.utils.Constants;
 
 import javax.inject.Inject;
 
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -25,7 +30,10 @@ public class DetailMovieViewModel extends ViewModel {
     private DetailMovieApi api;
     private MediatorLiveData<Resource<DetailMovie>> movieDetails;
     private MediatorLiveData<Resource<DetailTv>> tvDetails;
-    
+
+    @Inject
+    AppDatabase db;
+
     @Inject
     public DetailMovieViewModel(DetailMovieApi api) {
         this.api = api;
@@ -69,6 +77,8 @@ public class DetailMovieViewModel extends ViewModel {
                 }
             });
         }
+
+        Log.d(TAG, "observeMovieDetails: appdatabase " + db.movieDao().toString());
 
         return movieDetails;
 
@@ -115,5 +125,26 @@ public class DetailMovieViewModel extends ViewModel {
 
         return tvDetails;
 
+    }
+
+    public void saveMovie(int id, String title, String description, double rating, String posterPath, String placeholder, String releaseDate, int length, String genres) {
+        Movies movie = new Movies(id, title, description, rating, posterPath, placeholder, releaseDate, length, genres);
+        new insertDbTask(db).execute(movie);
+    }
+
+    private static class insertDbTask extends AsyncTask<Movies, Void, Void> {
+
+        private AppDatabase db;
+
+        public insertDbTask(AppDatabase db) {
+            this.db = db;
+        }
+
+        @Override
+        protected Void doInBackground(Movies... movies) {
+            db.movieDao().save(movies[0]);
+            Log.d(TAG, "doInBackground: Saved ");
+            return null;
+        }
     }
 }

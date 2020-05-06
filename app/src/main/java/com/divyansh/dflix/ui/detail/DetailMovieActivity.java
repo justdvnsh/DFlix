@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +15,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.divyansh.dflix.BaseActivity;
 import com.divyansh.dflix.R;
+import com.divyansh.dflix.data.entities.Movies;
+import com.divyansh.dflix.models.Genre;
 import com.divyansh.dflix.models.detailMovie.DetailMovie;
 import com.divyansh.dflix.models.detailTv.DetailTv;
 import com.divyansh.dflix.ui.Resource;
@@ -24,9 +28,9 @@ public class DetailMovieActivity extends BaseActivity {
 
     private static final String TAG = "DetailMovieActivity";
     private DetailMovieViewModel viewModel;
-    private TextView title, date, length, rating, description;
+    private TextView title, date, length, rating, description, placeholder, genres;
     private ImageView poster;
-    private ImageButton markAsFavorite;
+    private Button markAsFavorite;
 
     @Inject
     ViewModelProviderFactory providerFactory;
@@ -110,28 +114,48 @@ public class DetailMovieActivity extends BaseActivity {
     private void initViews() {
         poster = findViewById(R.id.poster);
         title = findViewById(R.id.name);
-        date = findViewById(R.id.releaseDate);
+        placeholder = findViewById(R.id.placeholder);
         length = findViewById(R.id.length);
         rating = findViewById(R.id.rating);
         description = findViewById(R.id.description);
+        date = findViewById(R.id.date);
+        genres = findViewById(R.id.genres);
         markAsFavorite = findViewById(R.id.mark_as_favorite);
     }
 
-    private void setViewsMovies(DetailMovie movie) {
-        title.setText(movie.getOriginalTitle());
+    private void setViewsMovies(final DetailMovie movie) {
         glide.load("http://image.tmdb.org/t/p/w342" + movie.getPosterPath()).into(poster);
+        title.setText(movie.getOriginalTitle());
+        placeholder.setText(movie.getTagline());
         date.setText(movie.getReleaseDate());
         length.setText(movie.getRuntime().toString() + "min");
-        rating.setText(movie.getVoteAverage().toString() + "/10");
+        rating.setText("IMDB " + movie.getVoteAverage().toString() + "/10");
         description.setText(movie.getOverview());
+        for (Genre g : movie.getGenres()) {
+            genres.append(g.getName() + " ");
+        }
+        markAsFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveMovie(movie.getId(), movie.getTitle(), movie.getOverview(), movie.getVoteAverage(), movie.getPosterPath(), movie.getTagline(), movie.getReleaseDate(), movie.getRuntime(), genres.getText().toString());
+            }
+        });
+    }
+
+    private void saveMovie(Integer id, String title, String overview, Double voteAverage, String posterPath, String tagline, String releaseDate, Integer runtime, String genre) {
+        viewModel.saveMovie(id, title, overview, voteAverage, posterPath, tagline, releaseDate, runtime, genre);
     }
 
     private void setViewsTv(DetailTv tv) {
+        glide.load("http://image.tmdb.org/t/p/w342" + tv.getPosterPath()).into(poster);
         title.setText(tv.getName());
-        glide.load("http://image.tmdb.org/t/p/w500" + tv.getPosterPath()).into(poster);
+        placeholder.setText("Last Aired on " +  tv.getLastAirDate().toString());
         date.setText(tv.getFirstAirDate());
         length.setText(tv.getOriginalName());
-        rating.setText(tv.getVoteAverage().toString() + "/10");
+        rating.setText("IMDB " + tv.getVoteAverage().toString() + "/10");
         description.setText(tv.getOverview());
+        for (Genre g: tv.getGenres()) {
+            genres.append(g.getName() + " ");
+        }
     }
 }
